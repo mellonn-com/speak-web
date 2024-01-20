@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import * as Ably from 'ably';
 
 	interface Message {
@@ -36,7 +37,7 @@
 			console.log('Updated message!');
 		});
 
-		window.addEventListener('beforeunload', async function () {
+		onDestroy(async () => {
 			await channel.detach();
 			ably.close();
 		});
