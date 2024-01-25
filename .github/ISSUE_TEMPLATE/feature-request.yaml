@@ -1,0 +1,31 @@
+
+name: Feature request
+description: Request a feature.
+assignees:
+  - JoakimMellonn
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Please describe the feature.
+      description: Please describe the feature in detail.
+      placeholder: The feature should...
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: What platform is the issue happening on?
+      multiple: true
+      options:
+        - Mobile (iOS)
+        - Mobile (Android)
+        - Chromium based browser
+        - Safari
+        - Firefox
+    validations:
+      required: true
