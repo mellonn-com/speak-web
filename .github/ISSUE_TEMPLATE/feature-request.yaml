@@ -16,16 +16,3 @@ body:
       placeholder: The feature should...
     validations:
       required: true
-  - type: dropdown
-    id: platform
-    attributes:
-      label: What platform is the issue happening on?
-      multiple: true
-      options:
-        - Mobile (iOS)
-        - Mobile (Android)
-        - Chromium based browser
-        - Safari
-        - Firefox
-    validations:
-      required: true
