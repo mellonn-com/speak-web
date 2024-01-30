@@ -1,6 +1,8 @@
 
 name: Feature request
 description: Request a feature.
+labels: ["feature request"]
+projects: ["mellonn-com/1"]
 assignees:
   - JoakimMellonn
 body:
