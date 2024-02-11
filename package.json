@@ -37,9 +37,11 @@
   "dependencies": {
     "@sveltejs/adapter-vercel": "^4.0.4",
     "ably": "^1.2.48",
+    "clerk-sveltekit": "^0.4.1",
     "clsx": "^2.1.0",
     "lucide-svelte": "^0.303.0",
     "tailwind-merge": "^2.2.0",
-    "tailwind-variants": "^0.1.19"
+    "tailwind-variants": "^0.1.19",
+    "vercel": "^33.5.0"
   }
 }

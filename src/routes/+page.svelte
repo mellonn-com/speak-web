@@ -53,12 +53,12 @@
 <h1>Welcome to SvelteKit</h1>
 This is testing the pull request creation...
 
-{#await setupPage()}
-	<p>loading</p>
-{:then}
-	{#each messages as message}
-		<li>{message.ID}. {message.Title}</li>
-	{/each}
-{:catch error}
-	<p style="color: red">{error.message}</p>
-{/await}
+<!-- {#await setupPage()} -->
+<!-- 	<p>loading</p> -->
+<!-- {:then} -->
+<!-- 	{#each messages as message} -->
+<!-- 		<li>{message.ID}. {message.Title}</li> -->
+<!-- 	{/each} -->
+<!-- {:catch error} -->
+<!-- 	<p style="color: red">{error.message}</p> -->
+<!-- {/await} -->
