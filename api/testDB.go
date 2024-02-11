@@ -14,8 +14,8 @@ import (
 )
 
 type Message struct {
-	ID    int
 	Title string
+	ID    int
 }
 
 func TestDB(w http.ResponseWriter, r *http.Request) {
@@ -154,7 +154,7 @@ func sendMessage(topic string, message string) {
 	client.Connection.OnAll(func(change ably.ConnectionStateChange) {
 		log.Printf("Connection event: %s state=%s reason=%s\n", change.Event, change.Current, change.Reason)
 	})
-	client.Connection.On(ably.ConnectionEventClosed, func(change ably.ConnectionStateChange) {
+	client.Connection.On(ably.ConnectionEventClosed, func(_ ably.ConnectionStateChange) {
 		log.Println("Closed the connection to Ably.")
 	})
 	client.Connect()
