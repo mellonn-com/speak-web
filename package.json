@@ -12,7 +12,8 @@
     "test:integration": "playwright test",
     "test:unit": "vitest",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generatedb": "drizzle-kit generate:mysql"
   },
   "devDependencies": {
     "@playwright/test": "^1.28.1",
@@ -21,6 +22,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/zxcvbn": "^4.4.4",
     "autoprefixer": "^10.4.16",
+    "drizzle-kit": "^0.20.14",
     "postcss": "^8.4.32",
     "postcss-load-config": "^5.0.2",
     "prettier": "^3.1.1",
@@ -36,6 +38,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@planetscale/database": "^1.16.0",
     "@sveltejs/adapter-vercel": "^4.0.4",
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
@@ -43,6 +46,7 @@
     "ably": "^1.2.48",
     "bits-ui": "^0.18.1",
     "clsx": "^2.1.0",
+    "drizzle-orm": "^0.29.4",
     "lucide-svelte": "^0.331.0",
     "mode-watcher": "^0.2.1",
     "tailwind-merge": "^2.2.1",
