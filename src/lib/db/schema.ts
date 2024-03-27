@@ -1,6 +1,6 @@
-import { mysqlTable, text, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
+import { pgTable, text, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
 
-export const users = mysqlTable("users", {
+export const users = pgTable("users", {
     id: varchar("id", { length: 36 }).primaryKey().unique(),
     email: text("email"),
     firstName: text("first_name"),
@@ -11,5 +11,5 @@ export const users = mysqlTable("users", {
     };
 });
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
+export type SelectUser = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
