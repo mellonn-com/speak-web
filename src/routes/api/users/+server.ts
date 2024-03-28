@@ -6,8 +6,8 @@ import { drizzle } from 'drizzle-orm/neon-http';
 const sql = neon(process.env.DATABASE_URL!) as NeonQueryFunction<boolean, boolean>;
 const db = drizzle(sql);
 
-export function GET() {
-    const result = db.select().from(users);
+export async function GET() {
+    const result = await db.select().from(users);
     return json(result);
 }
 

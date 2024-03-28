@@ -8,7 +8,7 @@ const sql = neon(process.env.DATABASE_URL!) as NeonQueryFunction<boolean, boolea
 const db = drizzle(sql);
 
 export const load: PageServerLoad = async ({ }) => {
-    const result = db.select().from(users);
+    const result = await db.select().from(users);
     return {
         users: result
     };
@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ }) => {
 
 export const actions = {
     default: async (event) => {
+        console.log("ACTION!");
         const id: string = uuidv4();
         let newUser: InsertUser;
         const data = await event.request.formData();

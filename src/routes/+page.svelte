@@ -1,10 +1,32 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { SelectUser } from '$lib/db/schema';
+	import type { InsertUser, SelectUser } from '$lib/db/schema';
 	import type { PageServerData } from './$types';
+	import { v4 as uuidv4 } from 'uuid';
 
 	export let data: PageServerData;
+
+	// @ts-ignore
 	let users: SelectUser[] = data!.users as SelectUser[];
+
+	async function addUser() {
+		console.log('Adding user');
+		const id = uuidv4();
+		const num = Math.floor(Math.random() * 420);
+		const newUser: InsertUser = {
+			id: id,
+			email: `john${num}@mellonn.com`,
+			firstName: `John${num}`,
+			lastName: `Doe`
+		};
+
+		const result = await fetch('/api/users', {
+			method: 'POST',
+			body: JSON.stringify(newUser)
+		});
+		const json = await result.json();
+		console.log(`Post result: ${json}`);
+		users.push(json as SelectUser);
+	}
 </script>
 
 <div class="p-4">
@@ -21,23 +43,10 @@
 		{/if}
 	</ol>
 
-	<form method="POST" use:enhance>
-		<label>
-			Email
-			<input name="email" type="email" />
-		</label>
-		<label>
-			First name
-			<input name="firstName" type="text" />
-		</label>
-		<label>
-			Last name
-			<input name="lastName" type="text" />
-		</label>
-		<button
-			class="mt-4 h-10 w-40 rounded-lg bg-indigo-500 text-gray-100 drop-shadow-md duration-150 hover:bg-indigo-600 hover:drop-shadow-sm"
-		>
-			Add user
-		</button>
-	</form>
+	<button
+		class="mt-4 h-10 w-40 rounded-lg bg-indigo-500 text-gray-100 drop-shadow-md duration-150 hover:bg-indigo-600 hover:drop-shadow-sm"
+		on:click={() => addUser()}
+	>
+		Add user
+	</button>
 </div>
