@@ -6,7 +6,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "npm run test:integration && npm run test:unit",
+    "test": "bun run test:integration && bun run test:unit",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:integration": "playwright test",
@@ -53,6 +53,6 @@
     "tailwind-merge": "^2.2.1",
     "tailwind-variants": "^0.2.0",
     "uuid": "^9.0.1",
-    "vercel": "^32.3.0"
+    "vercel": "^33.6.2"
   }
 }
