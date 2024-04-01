@@ -4,7 +4,9 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';
+	import type { ActionData } from '../$types';
 
+	export let form: ActionData;
 	let email: string = '';
 	let emailValid: boolean = false;
 	let password: string = '';
@@ -52,7 +54,7 @@
 </script>
 
 <div class="flex h-screen items-center justify-center">
-	<form on:submit={signIn}>
+	<form method="post" action="?/login">
 		<Card.Root class="w-[350px]">
 			<Card.Header class="space-y-1">
 				<Card.Title class="text-2xl">Sign in</Card.Title>
@@ -66,6 +68,8 @@
 						bind:value={email}
 						type="email"
 						placeholder="email@example.com"
+						autocomplete="username"
+						required
 						on:change={checkEmail}
 					/>
 				</div>
@@ -75,11 +79,12 @@
 						id="password"
 						bind:value={password}
 						type="password"
+						autocomplete="current-password"
 						required
 						on:keypress={handleKeyPress}
 					/>
 				</div>
-				{#if errorMessage != undefined}
+				{#if form?.missing}
 					<p class={cn('text-sm text-red-500 dark:text-red-700')}>{errorMessage}</p>
 				{/if}
 				<a href="/reset-account"><Card.Description>Forgot password?</Card.Description></a>

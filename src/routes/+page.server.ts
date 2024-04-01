@@ -8,7 +8,9 @@ const sql = neon(process.env.DATABASE_URL!) as NeonQueryFunction<boolean, boolea
 const db = drizzle(sql);
 
 export const load: PageServerLoad = async ({ }) => {
+    console.log("Getting users");
     const result = await db.select().from(users);
+    console.log(`Result: ${JSON.stringify(result)}`);
     return {
         users: result
     };
