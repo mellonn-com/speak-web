@@ -3,121 +3,79 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card';
-	import { zxcvbn } from '@zxcvbn-ts/core';
-	import { cn } from '$lib/utils';
+	import { superForm } from 'sveltekit-superforms';
 
-	let email: string = '';
-	let emailValid: boolean = false;
-	let password: string = '';
-	let passwordValid: boolean = false;
-	let confirmPassword: string = '';
-	$: passwordsMatch = password == confirmPassword;
-	let errorMessage: string | undefined;
+	export let data;
 
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key == 'Enter') {
-			event.preventDefault();
-			createAccount();
-		}
-	}
-
-	function checkEmail() {
-		if (email.length == 0 || email == undefined) {
-			errorMessage = 'Email must not be empty';
-			emailValid = false;
-			return;
-		}
-
-		const re =
-			/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-		if (!email.toLocaleLowerCase().match(re)) {
-			errorMessage = 'Email must be valid';
-			emailValid = false;
-			return;
-		}
-
-		errorMessage = undefined;
-		emailValid = true;
-	}
-
-	function checkPassword() {
-		if (password == undefined || password.length < 10) {
-			errorMessage = 'Password must be at least 10 characters.';
-			passwordValid = false;
-			return;
-		}
-		const result = zxcvbn(password);
-
-		if (result.score < 3) {
-			let feedback = result.feedback.warning;
-			if (feedback == null) {
-				feedback = 'Password is not strong enough, please choose another.';
-			}
-			errorMessage = feedback;
-			passwordValid = false;
-			return;
-		}
-		errorMessage = undefined;
-		passwordValid = true;
-	}
-
-	function checkMatch() {
-		if (!passwordsMatch) {
-			errorMessage = 'Passwords must match';
-			return;
-		}
-		errorMessage = undefined;
-		return;
-	}
-
-	function createAccount() {
-		checkEmail();
-		checkPassword();
-		checkMatch();
-
-		if (!emailValid || !passwordValid || !passwordsMatch) {
-			return;
-		}
-		console.log(`Creating account with email: ${email} and password: ${password}`);
-	}
+	const { form, errors, constraints, message, enhance } = superForm(data.form);
 </script>
 
 <div class="flex h-screen items-center justify-center">
-	<form on:submit={createAccount}>
+	<form method="post" use:enhance>
 		<Card.Root class="w-[350px]">
 			<Card.Header class="space-y-1">
 				<Card.Title class="text-2xl">Create an account</Card.Title>
 				<Card.Description>Enter your email below to create your account</Card.Description>
+				{#if $message}<Card.Description>{$message}</Card.Description>{/if}
 			</Card.Header>
 			<Card.Content class="grid gap-4">
+				<div class="grid gap-2">
+					<Label for="firstName">First name</Label>
+					<Input
+						id="firstName"
+						name="firstName"
+						placeholder="John"
+						bind:value={$form.firstName}
+						{...$constraints.firstName}
+					/>
+					{#if $errors.firstName}<span class="text-red-500">{$errors.firstName}</span>{/if}
+				</div>
+				<div class="grid gap-2">
+					<Label for="lastName">Last name</Label>
+					<Input
+						id="lastName"
+						name="lastName"
+						placeholder="Doe"
+						bind:value={$form.lastName}
+						{...$constraints.lastName}
+					/>
+					{#if $errors.lastName}<span class="text-red-500">{$errors.lastName}</span>{/if}
+				</div>
 				<div class="grid gap-2">
 					<Label for="email">Email</Label>
 					<Input
 						id="email"
+						name="email"
 						type="email"
 						placeholder="email@example.com"
-						bind:value={email}
-						on:change={checkEmail}
+						bind:value={$form.email}
+						{...$constraints.email}
 					/>
+					{#if $errors.email}<span class="text-red-500">{$errors.email}</span>{/if}
 				</div>
 				<div class="grid gap-2">
 					<Label for="password">Password</Label>
-					<Input id="password" type="password" bind:value={password} on:change={checkPassword} />
+					<Input
+						id="password"
+						name="password"
+						type="password"
+						bind:value={$form.password}
+						{...$constraints.password}
+					/>
+					{#if $errors.password}<span class="text-red-500">{$errors.password}</span>{/if}
 				</div>
 				<div class="grid gap-2">
 					<Label for="confirmPassword">Password</Label>
 					<Input
 						id="confirmPassword"
+						name="confirmPassword"
 						type="password"
-						bind:value={confirmPassword}
-						on:keypress={handleKeyPress}
-						on:change={checkMatch}
+						bind:value={$form.confirmPassword}
+						{...$constraints.confirmPassword}
 					/>
+					{#if $errors.confirmPassword}<span class="text-red-500">{$errors.confirmPassword}</span
+						>{/if}
 				</div>
-				{#if errorMessage != undefined}
-					<p class={cn('text-sm text-red-500 dark:text-red-700')}>{errorMessage}</p>
-				{/if}
 			</Card.Content>
 			<Card.Footer class="flex justify-between space-x-5">
 				<a href="/login"><Button variant="outline" class="flex-1">Cancel</Button></a>
