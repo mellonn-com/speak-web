@@ -84,7 +84,7 @@
 						on:keypress={handleKeyPress}
 					/>
 				</div>
-				{#if form?.missing}
+				{#if form?.}
 					<p class={cn('text-sm text-red-500 dark:text-red-700')}>{errorMessage}</p>
 				{/if}
 				<a href="/reset-account"><Card.Description>Forgot password?</Card.Description></a>

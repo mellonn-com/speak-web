@@ -5,7 +5,6 @@
 
 	export let data: PageServerData;
 
-	// @ts-ignore
 	let users: SelectUser[] = data!.users as SelectUser[];
 
 	async function addUser() {
@@ -19,13 +18,17 @@
 			lastName: `Doe`
 		};
 
-		const result = await fetch('/api/users', {
-			method: 'POST',
-			body: JSON.stringify(newUser)
-		});
-		const json = await result.json();
-		console.log(`Post result: ${json}`);
-		users.push(json as SelectUser);
+		try {
+			const result = await fetch('/api/users', {
+				method: 'POST',
+				body: JSON.stringify(newUser)
+			});
+			const json = await result.json();
+			console.log(`Post result: ${JSON.stringify(json)}`);
+			users = [...users, json as SelectUser];
+		} catch (err) {
+			console.log(`Something went wrong: ${err}`);
+		}
 	}
 </script>
 
@@ -43,10 +46,12 @@
 		{/if}
 	</ol>
 
-	<button
-		class="mt-4 h-10 w-40 rounded-lg bg-indigo-500 text-gray-100 drop-shadow-md duration-150 hover:bg-indigo-600 hover:drop-shadow-sm"
-		on:click={() => addUser()}
-	>
-		Add user
-	</button>
+	<form on:submit|preventDefault={addUser}>
+		<button
+			class="mt-4 h-10 w-40 rounded-lg bg-indigo-500 text-gray-100 drop-shadow-md duration-150 hover:bg-indigo-600 hover:drop-shadow-sm"
+			type="submit"
+		>
+			Add user
+		</button>
+	</form>
 </div>
