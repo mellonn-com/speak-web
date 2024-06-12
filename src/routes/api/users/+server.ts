@@ -1,10 +1,6 @@
 import { json } from "@sveltejs/kit";
 import { users, type InsertUser } from "$lib/db/schema";
-import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
-import { drizzle } from 'drizzle-orm/neon-http';
-
-const sql = neon(process.env.DATABASE_URL!) as NeonQueryFunction<boolean, boolean>;
-const db = drizzle(sql);
+import { db } from "$lib/db/database";
 
 export async function GET() {
     console.log("Getting users");
