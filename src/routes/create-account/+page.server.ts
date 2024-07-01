@@ -5,6 +5,7 @@ import { db } from '$lib/db/database';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { userCreateSchema } from '$lib/zod/schema';
+import { workos } from '$lib/workos';
 
 export const load = async () => {
     const form = await superValidate(zod(userCreateSchema));
@@ -20,10 +21,18 @@ export const actions = {
             return fail(400, { form })
         }
 
+        const user = await workos.userManagement.createUser({
+            email: form.data.email,
+            password: form.data.password,
+            firstName: form.data.firstName,
+            lastName: form.data.lastName
+        });
+
         const id: string = uuidv4();
         let newUser: InsertUser;
         newUser = {
             id: id,
+            workosID: user.id,
             email: form.data.email,
             firstName: form.data.firstName,
             lastName: form.data.lastName

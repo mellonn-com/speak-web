@@ -43,6 +43,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.9.0",
     "@sveltejs/adapter-vercel": "^4.0.4",
+    "@workos-inc/node": "^7.11.3",
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
     "@zxcvbn-ts/language-en": "^3.0.2",
