@@ -56,3 +56,18 @@ export const userResetSchema = z.object({
         })
     }
 });
+
+export const verifyEmailSchema = z.object({
+    code: z.string().min(6).max(6),
+    userId: z.string(),
+}).superRefine(async ({ userId }, ctx) => {
+    const user: SelectUser = (await db.select().from(users).where(eq(users.id, userId)))[0];
+
+    if (!user) {
+        ctx.addIssue({
+            code: "custom",
+            message: "User with this id doesn't exists.",
+            path: ["email"]
+        })
+    }
+});
