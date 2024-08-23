@@ -51,6 +51,7 @@
     "bits-ui": "^0.18.1",
     "clsx": "^2.1.0",
     "drizzle-orm": "^0.29.5",
+    "jose": "^5.7.0",
     "lucide-svelte": "^0.331.0",
     "mode-watcher": "^0.2.1",
     "tailwind-merge": "^2.2.1",

@@ -32,15 +32,6 @@ export const userLoginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(10),
 }).superRefine(async ({ email }, ctx) => {
-    const user: SelectUser = (await db.select().from(users).where(eq(users.email, email)))[0];
-
-    if (!user) {
-        ctx.addIssue({
-            code: "custom",
-            message: "User with this email doesn't exists.",
-            path: ["email"]
-        })
-    }
 });
 
 export const userResetSchema = z.object({

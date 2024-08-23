@@ -1,10 +1,14 @@
 import type { Actions } from "../$types";
 import { userLoginSchema } from "$lib/zod/schema";
-import { fail, message, superValidate } from "sveltekit-superforms";
+import { fail, message, setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { workos } from "$lib/workos";
 import { WORKOS_CLIENT_ID } from "$env/static/private";
 import { GenericServerException } from "@workos-inc/node";
+import { redirect } from "@sveltejs/kit";
+import { db } from "$lib/db/database";
+import { type SelectUser, users } from "$lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export const load = async () => {
     const form = await superValidate(zod(userLoginSchema));
@@ -12,7 +16,7 @@ export const load = async () => {
 }
 
 export const actions = {
-    default: async ({ request }) => {
+    default: async ({ request, cookies }) => {
         const form = await superValidate(request, zod(userLoginSchema));
         console.log(form);
 
@@ -20,25 +24,39 @@ export const actions = {
             return fail(400, { form })
         }
 
+        const dbUser: SelectUser = (await db.select().from(users).where(eq(users.email, form.data.email)))[0];
+
+        if (!dbUser) {
+            return setError(form, "email", "User with this email doesn't exist.")
+        }
+
+        // const dbUserWritable = writable();
+        // dbUserWritable.set(dbUser);
+        // setContext("dbUser", dbUserWritable);
+
         try {
-            const { user } = await workos.userManagement.authenticateWithPassword({
+            const { user, accessToken, refreshToken } = await workos.userManagement.authenticateWithPassword({
                 clientId: WORKOS_CLIENT_ID,
                 email: form.data.email,
                 password: form.data.password
             });
-            console.log(JSON.stringify(user));
+
+            cookies.set("access_token", accessToken, { path: '/' })
+            cookies.set("refresh_token", refreshToken, { path: '/', secure: true })
         } catch (err) {
             if (err instanceof GenericServerException) {
                 const data: any = err.rawData;
                 console.log(data)
                 if (data["code"] == "email_verification_required") {
                     console.log("Verification needed!!");
+                    cookies.set("email", form.data.email, { path: '/', secure: true })
+                    cookies.set("password", form.data.password, { path: '/', secure: true })
+                    return redirect(300, `/verify-email?userId=${dbUser.id}`);
                 }
             }
             return fail(500, { form });
         }
 
-        // TODO: redirect to email verification if needed, or redirect to app page.
         return message(form, "Successfully signed in");
     },
 } satisfies Actions;

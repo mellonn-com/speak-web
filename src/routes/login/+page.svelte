@@ -4,10 +4,20 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card';
 	import { superForm } from 'sveltekit-superforms';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	export let data;
 
+	const loginInfoWritable = writable();
+
 	const { form, errors, constraints, message, enhance } = superForm(data.form);
+
+	$: loginInfoWritable.set({
+		email: $form.email,
+		password: $form.password
+	});
+	setContext('loginInfo', loginInfoWritable);
 </script>
 
 <div class="flex h-screen items-center justify-center">
