@@ -14,14 +14,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 	console.log("JWT:")
 	console.log(JSON.stringify(jwt));
 
-	if (new Date(jwt.exp!) > new Date()) {
+	const expiry = new Date(jwt.exp! * 1000);
+	if (expiry <= new Date()) {
 		console.log("Expired")
 	}
 
 	const jwksUrl = workos.userManagement.getJwksUrl(WORKOS_CLIENT_ID);
-	console.log(jwksUrl);
 
 	const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl));
+	console.log(JWKS)
 	const { payload, protectedHeader } = await jose.jwtVerify(accessToken, JWKS)
 	console.log(protectedHeader)
 	console.log(payload)
