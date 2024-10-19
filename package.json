@@ -43,6 +43,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.9.0",
     "@sveltejs/adapter-vercel": "^4.0.4",
+    "@workos-inc/node": "^7.11.3",
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
     "@zxcvbn-ts/language-en": "^3.0.2",
@@ -50,12 +51,13 @@
     "bits-ui": "^0.18.1",
     "clsx": "^2.1.0",
     "drizzle-orm": "^0.29.5",
+    "jose": "^5.7.0",
     "lucide-svelte": "^0.331.0",
     "mode-watcher": "^0.2.1",
     "tailwind-merge": "^2.2.1",
     "tailwind-variants": "^0.2.0",
     "uuid": "^9.0.1",
-    "vercel": "^34.2.8",
+    "vercel": "^37.11.0",
     "zxcvbn": "^4.4.2"
   }
 }
