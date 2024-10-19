@@ -3,90 +3,45 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card';
-	import { cn } from '$lib/utils';
-	import type { ActionData } from '../$types';
+	import { superForm } from 'sveltekit-superforms';
 
-	export let form: ActionData;
-	let email: string = '';
-	let emailValid: boolean = false;
-	let password: string = '';
-	let errorMessage: string | undefined;
+	export let data;
 
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key == 'Enter') {
-			event.preventDefault();
-			signIn();
-		}
-	}
-
-	function checkEmail() {
-		if (email.length == 0 || email == undefined) {
-			errorMessage = 'Email must not be empty';
-			emailValid = false;
-			return;
-		}
-
-		const re =
-			/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-		if (!email.toLocaleLowerCase().match(re)) {
-			errorMessage = 'Email must be valid';
-			emailValid = false;
-			return;
-		}
-
-		errorMessage = undefined;
-		emailValid = true;
-	}
-
-	function signIn() {
-		checkEmail();
-
-		if (!emailValid) {
-			return;
-		}
-		if (password.length == 0 || password == undefined) {
-			errorMessage = 'Password must not be empty';
-			return;
-		}
-		console.log(`Email: ${email}, password: ${password}`);
-	}
+	const { form, errors, constraints, message, enhance } = superForm(data.form);
 </script>
 
 <div class="flex h-screen items-center justify-center">
-	<form method="post" action="?/login">
+	<form method="post" use:enhance>
 		<Card.Root class="w-[350px]">
 			<Card.Header class="space-y-1">
 				<Card.Title class="text-2xl">Sign in</Card.Title>
 				<Card.Description>Enter your email and password below</Card.Description>
+				{#if $message}<Card.Description>{$message}</Card.Description>{/if}
 			</Card.Header>
 			<Card.Content class="grid gap-4">
 				<div class="grid gap-2">
 					<Label for="email">Email</Label>
 					<Input
 						id="email"
-						bind:value={email}
+						name="email"
 						type="email"
 						placeholder="email@example.com"
-						autocomplete="username"
-						required
-						on:change={checkEmail}
+						bind:value={$form.email}
+						{...$constraints.email}
 					/>
+					{#if $errors.email}<span class="text-red-500">{$errors.email}</span>{/if}
 				</div>
 				<div class="grid gap-2">
 					<Label for="password">Password</Label>
 					<Input
 						id="password"
-						bind:value={password}
+						name="password"
 						type="password"
-						autocomplete="current-password"
-						required
-						on:keypress={handleKeyPress}
+						bind:value={$form.password}
+						{...$constraints.password}
 					/>
+					{#if $errors.password}<span class="text-red-500">{$errors.password}</span>{/if}
 				</div>
-				{#if form?.}
-					<p class={cn('text-sm text-red-500 dark:text-red-700')}>{errorMessage}</p>
-				{/if}
 				<a href="/reset-account"><Card.Description>Forgot password?</Card.Description></a>
 			</Card.Content>
 			<Card.Footer class="flex justify-between space-x-5">
