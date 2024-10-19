@@ -35,7 +35,7 @@ export const actions = {
         // setContext("dbUser", dbUserWritable);
 
         try {
-            const { user, accessToken, refreshToken } = await workos.userManagement.authenticateWithPassword({
+            const { accessToken, refreshToken } = await workos.userManagement.authenticateWithPassword({
                 clientId: WORKOS_CLIENT_ID,
                 email: form.data.email,
                 password: form.data.password
