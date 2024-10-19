@@ -1,64 +1,57 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
-	import * as Ably from 'ably';
+	import type { InsertUser, SelectUser } from '$lib/db/schema';
+	import type { PageServerData } from './$types';
+	import { v4 as uuidv4 } from 'uuid';
 
-	interface Message {
-		ID: number;
-		Title: string;
-	}
+	export let data: PageServerData;
 
-	let messages: Message[] = [];
+	let users: SelectUser[] = data!.users as SelectUser[];
 
-	async function setupPage() {
-		await fetchData();
-		await subscribeToAbly();
-	}
+	async function addUser() {
+		console.log('Adding user');
+		const id = uuidv4();
+		const num = Math.floor(Math.random() * 420);
+		const newUser: InsertUser = {
+			id: id,
+			email: `john${num}@mellonn.com`,
+			firstName: `John${num}`,
+			lastName: `Doe`
+		};
 
-	async function subscribeToAbly() {
-		const KEY = (await (await fetch('/api/keys')).json()).key;
-		console.log(KEY);
-		const ably = new Ably.Realtime.Promise({ key: KEY });
-		await ably.connection.once('connected');
-		console.log('Connected to ably');
-		const channel = ably.channels.get('test');
-
-		channel.subscribe((message) => {
-			console.log(`Message received from ably: ${message}`);
-			const newElement = JSON.parse(message.data).object as Message;
-			console.log(`newElement: ${JSON.stringify(newElement)}`);
-			console.log(`Checking against list: ${JSON.stringify(messages)}`);
-			let messageToChange = messages.findIndex((message) => message.ID == newElement.ID);
-			if (messageToChange == -1) {
-				console.log(`Failed getting element from list, with id: ${newElement.ID}`);
-				fetchData();
-				return;
-			}
-			messages[messageToChange].Title = newElement.Title;
-			console.log('Updated message!');
-		});
-
-		onDestroy(async () => {
-			await channel.detach();
-			ably.close();
-		});
-	}
-
-	async function fetchData() {
-		let response = await fetch(`/api/testDB`);
-		console.log(response);
-		messages = (await response.json()).messages;
+		try {
+			const result = await fetch('/api/users', {
+				method: 'POST',
+				body: JSON.stringify(newUser)
+			});
+			const json = await result.json();
+			console.log(`Post result: ${JSON.stringify(json)}`);
+			users = [...users, json as SelectUser];
+		} catch (err) {
+			console.log(`Something went wrong: ${err}`);
+		}
 	}
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-This is testing the pull request creation...
+<div class="p-4">
+	<h1 class="text-5xl">Welcome to SvelteKit</h1>
 
-{#await setupPage()}
-	<p>loading</p>
-{:then}
-	{#each messages as message}
-		<li>{message.ID}. {message.Title}</li>
-	{/each}
-{:catch error}
-	<p style="color: red">{error.message}</p>
-{/await}
+	<h2 class="mb-2 mt-4 text-xl">Users</h2>
+	<ol>
+		{#if users.length > 0}
+			{#each users as user}
+				<li>Id: {user.id}, message: {user.email}</li>
+			{/each}
+		{:else}
+			<p>There's no users here...</p>
+		{/if}
+	</ol>
+
+	<form on:submit|preventDefault={addUser}>
+		<button
+			class="mt-4 h-10 w-40 rounded-lg bg-indigo-500 text-gray-100 drop-shadow-md duration-150 hover:bg-indigo-600 hover:drop-shadow-sm"
+			type="submit"
+		>
+			Add user
+		</button>
+	</form>
+</div>
