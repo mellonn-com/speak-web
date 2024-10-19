@@ -1,35 +1,10 @@
 <script lang="ts">
-	import type { InsertUser, SelectUser } from '$lib/db/schema';
+	import type { SelectUser } from '$lib/db/schema';
 	import type { PageServerData } from './$types';
-	import { v4 as uuidv4 } from 'uuid';
 
 	export let data: PageServerData;
 
 	let users: SelectUser[] = data!.users as SelectUser[];
-
-	async function addUser() {
-		console.log('Adding user');
-		const id = uuidv4();
-		const num = Math.floor(Math.random() * 420);
-		const newUser: InsertUser = {
-			id: id,
-			email: `john${num}@mellonn.com`,
-			firstName: `John${num}`,
-			lastName: `Doe`
-		};
-
-		try {
-			const result = await fetch('/api/users', {
-				method: 'POST',
-				body: JSON.stringify(newUser)
-			});
-			const json = await result.json();
-			console.log(`Post result: ${JSON.stringify(json)}`);
-			users = [...users, json as SelectUser];
-		} catch (err) {
-			console.log(`Something went wrong: ${err}`);
-		}
-	}
 </script>
 
 <div class="p-4">
@@ -46,12 +21,10 @@
 		{/if}
 	</ol>
 
-	<form on:submit|preventDefault={addUser}>
+	<form method="POST" action="?/signOut">
 		<button
 			class="mt-4 h-10 w-40 rounded-lg bg-indigo-500 text-gray-100 drop-shadow-md duration-150 hover:bg-indigo-600 hover:drop-shadow-sm"
-			type="submit"
+			type="submit">Sign out</button
 		>
-			Add user
-		</button>
 	</form>
 </div>
