@@ -42,9 +42,31 @@ export const userResetSchema = z.object({
     if (!user) {
         ctx.addIssue({
             code: "custom",
-            message: "User with this email doesn't exists.",
+            message: "User with this email doesn't exist.",
             path: ["email"]
         })
+    }
+});
+
+export const passwordResetSchema = z.object({
+    password: z.string().min(10),
+    confirmPassword: z.string().min(10),
+    token: z.string().nullable()
+}).superRefine(({ password, confirmPassword }, ctx) => {
+    const result = zxcvbn(password);
+    if (result.score < 3) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Passwords not strong enough, please work out a bit.",
+            path: ["password"]
+        });
+    }
+    if (password !== confirmPassword) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Passwords must match",
+            path: ["confirmPassword"]
+        });
     }
 });
 
@@ -57,7 +79,7 @@ export const verifyEmailSchema = z.object({
     if (!user) {
         ctx.addIssue({
             code: "custom",
-            message: "User with this id doesn't exists.",
+            message: "User with this id doesn't exist.",
             path: ["email"]
         })
     }

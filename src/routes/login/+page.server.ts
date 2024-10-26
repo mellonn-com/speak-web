@@ -30,10 +30,6 @@ export const actions = {
             return setError(form, "email", "User with this email doesn't exist.")
         }
 
-        // const dbUserWritable = writable();
-        // dbUserWritable.set(dbUser);
-        // setContext("dbUser", dbUserWritable);
-
         try {
             const { accessToken, refreshToken } = await workos.userManagement.authenticateWithPassword({
                 clientId: WORKOS_CLIENT_ID,
@@ -57,6 +53,6 @@ export const actions = {
             return fail(500, { form });
         }
 
-        return message(form, "Successfully signed in");
+        return redirect(307, "/");
     },
 } satisfies Actions;

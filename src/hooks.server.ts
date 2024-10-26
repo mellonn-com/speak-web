@@ -4,27 +4,25 @@ import { redirect, type Handle, type RequestEvent } from "@sveltejs/kit";
 import * as jose from 'jose';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const loginPaths = ["/login", "/reset-account", "verify-email", "create-account"];
+	const loginPaths = ["/login", "/reset-account", "/reset-account/password", "/verify-email", "/create-account"];
 	const accessToken = event.cookies.get("access_token");
 
 	if (!accessToken) {
-		clearCookies(event);
-		if (event.route.id == "/login") {
+		if (loginPaths.includes(event.route.id!)) {
 			return resolve(event);
 		}
+		clearCookies(event);
 		return redirect(307, '/login');
 	}
 
 	let jwt = jose.decodeJwt(accessToken);
-	console.log("JWT:")
-	console.log(JSON.stringify(jwt));
 
 	const expiry = new Date(jwt.exp! * 1000);
 	if (expiry <= new Date()) {
 		const refreshToken = event.cookies.get("refresh_token");
 		if (!refreshToken) {
 			clearCookies(event);
-			if (event.route.id == "/login") {
+			if (loginPaths.includes(event.route.id!)) {
 				return resolve(event);
 			}
 			return redirect(307, "/login");
@@ -41,7 +39,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		} catch (err) {
 			console.error(`New tokens error: ${err}`);
 			clearCookies(event);
-			if (event.route.id == "/login") {
+			if (loginPaths.includes(event.route.id!)) {
 				return resolve(event);
 			}
 			return redirect(307, "/login");
@@ -52,10 +50,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const jwksUrl = workos.userManagement.getJwksUrl(WORKOS_CLIENT_ID);
 
 		const JWKS = jose.createRemoteJWKSet(new URL(jwksUrl));
-		// console.log(JWKS)
-		const { payload, protectedHeader } = await jose.jwtVerify(accessToken, JWKS)
-		console.log(protectedHeader)
-		console.log(payload)
+		await jose.jwtVerify(accessToken, JWKS);
 
 		if (loginPaths.includes(event.route.id!)) {
 			throw "login"
@@ -67,7 +62,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			return redirect(307, "/");
 		}
 		clearCookies(event);
-		if (event.route.id == "/login") {
+		if (loginPaths.includes(event.route.id!)) {
 			return resolve(event);
 		}
 		return redirect(307, "/login");
