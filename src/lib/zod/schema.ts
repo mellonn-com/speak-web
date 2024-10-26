@@ -48,6 +48,28 @@ export const userResetSchema = z.object({
     }
 });
 
+export const passwordResetSchema = z.object({
+    password: z.string().min(10),
+    confirmPassword: z.string().min(10),
+    token: z.string().nullable()
+}).superRefine(({ password, confirmPassword }, ctx) => {
+    const result = zxcvbn(password);
+    if (result.score < 3) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Passwords not strong enough, please work out a bit.",
+            path: ["password"]
+        });
+    }
+    if (password !== confirmPassword) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Passwords must match",
+            path: ["confirmPassword"]
+        });
+    }
+});
+
 export const verifyEmailSchema = z.object({
     code: z.string().min(6).max(6),
     userId: z.string(),

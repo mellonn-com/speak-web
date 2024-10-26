@@ -53,6 +53,6 @@ export const actions = {
             return fail(500, { form });
         }
 
-        return message(form, "Successfully signed in");
+        return redirect(307, "/");
     },
 } satisfies Actions;
