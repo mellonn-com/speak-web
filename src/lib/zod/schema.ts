@@ -42,7 +42,7 @@ export const userResetSchema = z.object({
     if (!user) {
         ctx.addIssue({
             code: "custom",
-            message: "User with this email doesn't exists.",
+            message: "User with this email doesn't exist.",
             path: ["email"]
         })
     }
@@ -57,7 +57,7 @@ export const verifyEmailSchema = z.object({
     if (!user) {
         ctx.addIssue({
             code: "custom",
-            message: "User with this id doesn't exists.",
+            message: "User with this id doesn't exist.",
             path: ["email"]
         })
     }
