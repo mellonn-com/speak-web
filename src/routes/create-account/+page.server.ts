@@ -1,4 +1,4 @@
-import type { Actions } from './$types'
+import type { Actions } from './$types';
 import { users, type InsertUser } from '$lib/db/schema';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '$lib/db/database';
@@ -8,40 +8,40 @@ import { userCreateSchema } from '$lib/zod/schema';
 import { workos } from '$lib/workos';
 
 export const load = async () => {
-    const form = await superValidate(zod(userCreateSchema));
-    return { form };
-}
+	const form = await superValidate(zod(userCreateSchema));
+	return { form };
+};
 
 export const actions = {
-    default: async (request) => {
-        const form = await superValidate(request, zod(userCreateSchema));
-        console.log(form);
+	default: async (request) => {
+		const form = await superValidate(request, zod(userCreateSchema));
+		console.log(form);
 
-        if (!form.valid) {
-            return fail(400, { form })
-        }
+		if (!form.valid) {
+			return fail(400, { form });
+		}
 
-        const user = await workos.userManagement.createUser({
-            email: form.data.email,
-            password: form.data.password,
-            firstName: form.data.firstName,
-            lastName: form.data.lastName
-        });
+		const user = await workos.userManagement.createUser({
+			email: form.data.email,
+			password: form.data.password,
+			firstName: form.data.firstName,
+			lastName: form.data.lastName
+		});
 
-        const id: string = uuidv4();
-        let newUser: InsertUser;
-        newUser = {
-            id: id,
-            workosID: user.id,
-            email: form.data.email,
-            firstName: form.data.firstName,
-            lastName: form.data.lastName
-        };
+		const id: string = uuidv4();
+		let newUser: InsertUser;
+		newUser = {
+			id: id,
+			workosID: user.id,
+			email: form.data.email,
+			firstName: form.data.firstName,
+			lastName: form.data.lastName
+		};
 
-        console.log(`Adding new user: ${JSON.stringify(newUser)}`);
+		console.log(`Adding new user: ${JSON.stringify(newUser)}`);
 
-        await db.insert(users).values(newUser);
+		await db.insert(users).values(newUser);
 
-        return message(form, "User created");
-    },
+		return message(form, 'User created');
+	}
 } satisfies Actions;

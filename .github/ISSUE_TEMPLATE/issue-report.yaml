@@ -1,8 +1,7 @@
-
 name: Issue report
 description: Report an issue.
-labels: ["bug"]
-projects: ["mellonn-com/1"]
+labels: ['bug']
+projects: ['mellonn-com/1']
 assignees:
   - JoakimMellonn
 body:
