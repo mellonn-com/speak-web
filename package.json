@@ -49,6 +49,7 @@
 		"@zxcvbn-ts/language-en": "^3.0.2",
 		"ably": "^1.2.48",
 		"bits-ui": "^0.18.1",
+		"caniuse-lite": "^1.0.30001672",
 		"clsx": "^2.1.0",
 		"drizzle-orm": "^0.29.5",
 		"jose": "^5.7.0",
