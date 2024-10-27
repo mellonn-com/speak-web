@@ -2,7 +2,11 @@
 	import type { SelectUser } from '$lib/db/schema';
 	import type { PageServerData } from './$types';
 
-	export let data: PageServerData;
+	interface Props {
+		data: PageServerData;
+	}
+
+	let { data }: Props = $props();
 
 	let users: SelectUser[] = data!.users as SelectUser[];
 </script>

@@ -6,7 +6,11 @@
 	import { superForm } from 'sveltekit-superforms';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data = $bindable() }: Props = $props();
 
 	const { form, errors, constraints, message, enhance } = superForm(data.form);
 </script>

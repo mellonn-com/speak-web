@@ -5,7 +5,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { superForm } from 'sveltekit-superforms';
 
-	export let data;
+	let { data } = $props();
 
 	const { form, errors, constraints, message, enhance } = superForm(data.form);
 </script>

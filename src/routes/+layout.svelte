@@ -3,6 +3,11 @@
 	import { Moon, Sun } from 'lucide-svelte';
 	import '../app.pcss';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <ModeWatcher />
@@ -17,4 +22,4 @@
 	<span class="sr-only">Toggle theme</span>
 </Button>
 
-<slot />
+{@render children?.()}

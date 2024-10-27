@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
@@ -7,15 +9,17 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	export let data;
+	let { data } = $props();
 
 	const loginInfoWritable = writable();
 
 	const { form, errors, constraints, message, enhance } = superForm(data.form);
 
-	$: loginInfoWritable.set({
-		email: $form.email,
-		password: $form.password
+	run(() => {
+		loginInfoWritable.set({
+			email: $form.email,
+			password: $form.password
+		});
 	});
 	setContext('loginInfo', loginInfoWritable);
 </script>
